@@ -79,12 +79,6 @@ interface NexusStore {
   addPulse: (nodeId: string) => void;
   clearPulses: () => void;
 
-  // NL Query
-  queryOpen: boolean;
-  setQueryOpen: (open: boolean) => void;
-  lastQueryResult: string;
-  setLastQueryResult: (r: string) => void;
-
   // Globe selected country
   selectedCountry: string | null;
   setSelectedCountry: (c: string | null) => void;
@@ -133,11 +127,6 @@ export const useNexusStore = create<NexusStore>((set) => ({
       pulses: [...state.pulses.slice(-10), { nodeId, timestamp: Date.now() }],
     })),
   clearPulses: () => set({ pulses: [] }),
-
-  queryOpen: false,
-  setQueryOpen: (open) => set({ queryOpen: open }),
-  lastQueryResult: "",
-  setLastQueryResult: (r) => set({ lastQueryResult: r }),
 
   selectedCountry: null,
   setSelectedCountry: (c) => set({ selectedCountry: c }),

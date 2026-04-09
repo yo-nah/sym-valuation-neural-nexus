@@ -1,46 +1,15 @@
-import { useState, useRef } from "react";
 import { useNexusStore, HeatmapMode } from "@/lib/store";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Search, Flame, TrendingDown, BarChart2, EyeOff, Zap, GitBranch } from "lucide-react";
+import { Flame, TrendingDown, BarChart2, EyeOff, GitBranch } from "lucide-react";
 
-const HEATMAP_OPTIONS: { mode: HeatmapMode; icon: any; label: string; color: string }[] = [
-  { mode: "bull", icon: TrendingDown, label: "BULL", color: "text-green-400" },
-  { mode: "bear", icon: TrendingDown, label: "BEAR", color: "text-red-400" },
-  { mode: "net", icon: BarChart2, label: "NET", color: "text-primary" },
-  { mode: "off", icon: EyeOff, label: "OFF", color: "text-muted-foreground" },
+const HEATMAP_OPTIONS: { mode: HeatmapMode; label: string; color: string }[] = [
+  { mode: "bull", label: "BULL", color: "text-green-400" },
+  { mode: "bear", label: "BEAR", color: "text-red-400" },
+  { mode: "net",  label: "NET",  color: "text-primary" },
+  { mode: "off",  label: "OFF",  color: "text-muted-foreground" },
 ];
 
 export function TopBar() {
-  const { heatmapMode, setHeatmapMode, nexusOpen, setNexusOpen, valuation, addPulse } = useNexusStore();
-  const [query, setQuery] = useState("");
-  const [queryResult, setQueryResult] = useState("");
-  const [isQuerying, setIsQuerying] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const qc = useQueryClient();
-
-  const queryMutation = useMutation({
-    mutationFn: async (q: string) => {
-      const res = await apiRequest("POST", "/api/query", { query: q });
-      return res.json();
-    },
-    onSuccess: (data) => {
-      setQueryResult(data.message);
-      setIsQuerying(false);
-      // Trigger pulse on all nodes
-      ["assumptions", "firm", "ecosystem", "global"].forEach((id) => addPulse(id));
-      qc.invalidateQueries({ queryKey: ["/api/assumptions"] });
-      qc.invalidateQueries({ queryKey: ["/api/valuation"] });
-    },
-    onError: () => setIsQuerying(false),
-  });
-
-  const handleQuery = () => {
-    if (!query.trim()) return;
-    setIsQuerying(true);
-    setQueryResult("");
-    queryMutation.mutate(query);
-  };
+  const { heatmapMode, setHeatmapMode, nexusOpen, setNexusOpen, valuation } = useNexusStore();
 
   return (
     <div
@@ -63,35 +32,8 @@ export function TopBar() {
         </div>
       </div>
 
-      {/* NL Query Bar */}
-      <div className="flex-1 max-w-xl relative">
-        <div className="flex items-center gap-2 bg-card border border-primary/20 rounded-lg px-3 py-1.5 focus-within:border-primary/50 transition-colors">
-          <Search size={12} className="text-muted-foreground flex-shrink-0" />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleQuery()}
-            placeholder='Ask anything... "What if China tariffs rise 15% and WACC drops 1%?"'
-            className="flex-1 bg-transparent text-xs font-mono text-foreground placeholder:text-muted-foreground/50 outline-none"
-            data-testid="nl-query-input"
-          />
-          <button
-            onClick={handleQuery}
-            disabled={isQuerying || !query.trim()}
-            className="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-primary/20 text-primary hover:bg-primary/30 disabled:opacity-40 transition-colors"
-          >
-            <Zap size={10} />
-            {isQuerying ? "..." : "RUN"}
-          </button>
-        </div>
-        {queryResult && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-primary/30 rounded-lg px-3 py-2 text-[11px] font-mono text-primary z-50">
-            <Zap size={10} className="inline mr-1" />
-            {queryResult}
-          </div>
-        )}
-      </div>
+      {/* Spacer */}
+      <div className="flex-1" />
 
       {/* Heatmap mode selector */}
       <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">

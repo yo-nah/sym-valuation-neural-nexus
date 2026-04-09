@@ -174,7 +174,7 @@ export function Appendix() {
           <div className="space-y-1.5 text-[10px] font-mono">
             <div className="flex gap-4"><span className="text-primary">v1.0.0</span><span className="text-muted-foreground">Initial release — 11-page dashboard with full Nexus overlay</span></div>
             <div className="flex gap-4"><span className="text-primary">v1.1.0</span><span className="text-muted-foreground">Added holographic globe, BIS/IMF macro integration</span></div>
-            <div className="flex gap-4"><span className="text-primary">v1.2.0</span><span className="text-muted-foreground">NL query engine, impact heatmap layer, Bayesian ensemble</span></div>
+            <div className="flex gap-4"><span className="text-primary">v1.2.0</span><span className="text-muted-foreground">Impact heatmap layer, Bayesian ensemble</span></div>
           </div>
         </div>
 
@@ -185,7 +185,7 @@ export function Appendix() {
 {`graph TB
   subgraph Frontend["React Frontend (Vite + Tailwind + shadcn)"]
     NB[Neural Background Canvas]
-    TB2[Top Bar — NL Query + Heatmap Toggle]
+    TB2[Top Bar — Heatmap Toggle + Price Target]
     NO[Nexus Overlay — ReactFlow Graph]
     SB[Sidebar Navigation]
     subgraph Pages
@@ -200,7 +200,6 @@ export function Appendix() {
   subgraph Backend["Express + FastAPI Backend"]
     API[REST API Routes]
     VE[Valuation Engine]
-    NLP[NL Query Parser]
     DB[(SQLite via Drizzle)]
   end
   subgraph State["Zustand Global Store"]
@@ -211,7 +210,6 @@ export function Appendix() {
   end
   Pages <--> API
   API <--> VE
-  API <--> NLP
   API <--> DB
   Pages <--> State
   NO <--> State`}
