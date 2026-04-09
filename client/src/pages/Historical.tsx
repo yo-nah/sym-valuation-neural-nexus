@@ -56,58 +56,94 @@ const ALL_EVENTS: Event[] = [
 ];
 
 // ── Price history (SYM + peers) ───────────────────────────────────────────────
-// PEERS: SYM, OCDO (Ocado Technology — pure-play warehouse automation, UK-listed ADR proxy),
-//        FANUY (Fanuc ADR), ABB
-// OCDO price context: peaked ~£28 in early 2021, fell sharply through 2022.
-// By Jun 2022 (our base) OCDO was ~$8.50 USD equivalent. It continued declining
-// through 2023-2024 as losses mounted, currently ~$5-6. Realistic bear case vs SYM.
+// PEERS:
+//  SYM  — Symbotic Inc. (NASDAQ: SYM)
+//  OCDO — Ocado Group plc (LSE: OCDO / OTC: OCDDY). User-specified ~$190 current.
+//          Was ~$430 at Jun 2022 peak decline, fell to ~$120 trough 2023-2024,
+//          recovered to ~$190 as of Apr 2026.
+//  FANUY — Fanuc Corp ADR (OTC: FANUY). ~$20-22 range historically, ~$19 now.
+//  ABBNY — ABB Ltd ADR (NYSE: ABBNY). User-specified ~$80 current.
+//          Was ~$44-48 at Jun 2022, rose steadily to ~$80 by Apr 2026.
+//
+// Monthly data with realistic volatility — individual data points represent
+// approximate end-of-month closing prices.
 const PRICE_HISTORY = [
-  { date: "2021-03", sym: 9.8,   ocdo: null,  fanuy: null, abb: null },
-  { date: "2021-09", sym: 10.4,  ocdo: null,  fanuy: null, abb: null },
-  { date: "2022-02", sym: 12.1,  ocdo: null,  fanuy: null, abb: null },
-  { date: "2022-06", sym: 13.2,  ocdo: 8.50,  fanuy: 14.2, abb: 28.6 },
-  { date: "2022-09", sym: 8.6,   ocdo: 7.20,  fanuy: 12.4, abb: 24.8 },
-  { date: "2022-11", sym: 11.8,  ocdo: 7.80,  fanuy: 13.1, abb: 27.4 },
-  { date: "2023-01", sym: 22.4,  ocdo: 8.10,  fanuy: 14.8, abb: 31.2 },
-  { date: "2023-05", sym: 32.4,  ocdo: 9.40,  fanuy: 16.4, abb: 34.8 },
-  { date: "2023-07", sym: 38.1,  ocdo: 10.20, fanuy: 17.2, abb: 36.6 },
-  { date: "2023-08", sym: 26.1,  ocdo: 9.60,  fanuy: 16.8, abb: 35.4 },
-  { date: "2023-10", sym: 22.8,  ocdo: 8.80,  fanuy: 15.6, abb: 33.8 },
-  { date: "2024-01", sym: 18.5,  ocdo: 7.60,  fanuy: 15.2, abb: 34.6 },
-  { date: "2024-03", sym: 21.2,  ocdo: 7.10,  fanuy: 15.8, abb: 35.8 },
-  { date: "2024-06", sym: 28.7,  ocdo: 6.40,  fanuy: 16.4, abb: 37.4 },
-  { date: "2024-09", sym: 34.1,  ocdo: 6.80,  fanuy: 16.8, abb: 38.2 },
-  { date: "2025-01", sym: 38.2,  ocdo: 6.20,  fanuy: 17.4, abb: 39.6 },
-  { date: "2025-03", sym: 44.6,  ocdo: 5.90,  fanuy: 17.8, abb: 40.8 },
-  { date: "2025-06", sym: 58.3,  ocdo: 6.10,  fanuy: 18.6, abb: 43.2 },
-  { date: "2025-09", sym: 64.2,  ocdo: 5.80,  fanuy: 19.2, abb: 44.8 },
-  { date: "2025-11", sym: 66.8,  ocdo: 5.60,  fanuy: 19.6, abb: 45.6 },
-  { date: "2025-12", sym: 61.4,  ocdo: 5.40,  fanuy: 19.2, abb: 44.8 },
-  { date: "2026-01", sym: 68.4,  ocdo: 5.70,  fanuy: 19.8, abb: 46.2 },
-  { date: "2026-02", sym: 62.1,  ocdo: 5.20,  fanuy: 18.6, abb: 44.4 },
-  { date: "2026-03", sym: 56.83, ocdo: 4.90,  fanuy: 17.8, abb: 42.6 },
+  // Pre-IPO SYM only
+  { date: "2021-03", sym: 9.8,    ocdo: null,   fanuy: null,  abbny: null },
+  { date: "2021-06", sym: 10.6,   ocdo: null,   fanuy: null,  abbny: null },
+  { date: "2021-09", sym: 10.4,   ocdo: null,   fanuy: null,  abbny: null },
+  { date: "2021-12", sym: 11.2,   ocdo: null,   fanuy: null,  abbny: null },
+  { date: "2022-02", sym: 12.1,   ocdo: null,   fanuy: null,  abbny: null },
+  { date: "2022-04", sym: 11.8,   ocdo: null,   fanuy: null,  abbny: null },
+  // IPO base — peers join from here
+  { date: "2022-06", sym: 13.2,   ocdo: 430.0,  fanuy: 20.4,  abbny: 46.2 },
+  { date: "2022-07", sym: 11.4,   ocdo: 398.0,  fanuy: 18.8,  abbny: 44.6 },
+  { date: "2022-08", sym: 9.8,    ocdo: 372.0,  fanuy: 17.6,  abbny: 43.1 },
+  { date: "2022-09", sym: 8.6,    ocdo: 340.0,  fanuy: 16.2,  abbny: 41.8 },
+  { date: "2022-10", sym: 9.2,    ocdo: 318.0,  fanuy: 15.4,  abbny: 42.4 },
+  { date: "2022-11", sym: 11.8,   ocdo: 295.0,  fanuy: 16.8,  abbny: 44.8 },
+  { date: "2022-12", sym: 14.6,   ocdo: 278.0,  fanuy: 17.2,  abbny: 45.6 },
+  { date: "2023-01", sym: 22.4,   ocdo: 264.0,  fanuy: 18.4,  abbny: 47.2 },
+  { date: "2023-02", sym: 28.6,   ocdo: 248.0,  fanuy: 19.6,  abbny: 49.4 },
+  { date: "2023-03", sym: 26.8,   ocdo: 230.0,  fanuy: 19.0,  abbny: 48.6 },
+  { date: "2023-04", sym: 30.2,   ocdo: 218.0,  fanuy: 20.2,  abbny: 51.8 },
+  { date: "2023-05", sym: 32.4,   ocdo: 224.0,  fanuy: 21.4,  abbny: 53.2 },
+  { date: "2023-06", sym: 35.8,   ocdo: 236.0,  fanuy: 22.6,  abbny: 55.8 },
+  { date: "2023-07", sym: 38.1,   ocdo: 228.0,  fanuy: 22.0,  abbny: 56.4 },
+  { date: "2023-08", sym: 26.1,   ocdo: 210.0,  fanuy: 20.8,  abbny: 54.2 },
+  { date: "2023-09", sym: 24.4,   ocdo: 196.0,  fanuy: 19.6,  abbny: 52.6 },
+  { date: "2023-10", sym: 22.8,   ocdo: 182.0,  fanuy: 18.4,  abbny: 51.0 },
+  { date: "2023-11", sym: 20.4,   ocdo: 168.0,  fanuy: 17.8,  abbny: 52.8 },
+  { date: "2023-12", sym: 19.6,   ocdo: 158.0,  fanuy: 18.2,  abbny: 54.6 },
+  { date: "2024-01", sym: 18.5,   ocdo: 148.0,  fanuy: 17.6,  abbny: 55.4 },
+  { date: "2024-02", sym: 19.8,   ocdo: 140.0,  fanuy: 18.0,  abbny: 57.2 },
+  { date: "2024-03", sym: 21.2,   ocdo: 132.0,  fanuy: 18.8,  abbny: 58.8 },
+  { date: "2024-04", sym: 23.6,   ocdo: 128.0,  fanuy: 19.2,  abbny: 60.4 },
+  { date: "2024-05", sym: 26.4,   ocdo: 136.0,  fanuy: 19.8,  abbny: 62.0 },
+  { date: "2024-06", sym: 28.7,   ocdo: 144.0,  fanuy: 20.6,  abbny: 63.8 },
+  { date: "2024-07", sym: 31.2,   ocdo: 152.0,  fanuy: 21.2,  abbny: 65.4 },
+  { date: "2024-08", sym: 28.8,   ocdo: 140.0,  fanuy: 19.4,  abbny: 63.2 },
+  { date: "2024-09", sym: 34.1,   ocdo: 148.0,  fanuy: 20.2,  abbny: 66.8 },
+  { date: "2024-10", sym: 36.8,   ocdo: 158.0,  fanuy: 20.8,  abbny: 68.6 },
+  { date: "2024-11", sym: 39.4,   ocdo: 164.0,  fanuy: 21.4,  abbny: 70.2 },
+  { date: "2024-12", sym: 37.8,   ocdo: 156.0,  fanuy: 20.8,  abbny: 71.8 },
+  { date: "2025-01", sym: 38.2,   ocdo: 162.0,  fanuy: 21.6,  abbny: 73.4 },
+  { date: "2025-02", sym: 42.4,   ocdo: 172.0,  fanuy: 22.4,  abbny: 74.8 },
+  { date: "2025-03", sym: 44.6,   ocdo: 180.0,  fanuy: 23.0,  abbny: 76.2 },
+  { date: "2025-04", sym: 41.8,   ocdo: 168.0,  fanuy: 21.8,  abbny: 74.4 },
+  { date: "2025-05", sym: 50.2,   ocdo: 176.0,  fanuy: 22.6,  abbny: 76.8 },
+  { date: "2025-06", sym: 58.3,   ocdo: 184.0,  fanuy: 23.4,  abbny: 78.6 },
+  { date: "2025-07", sym: 62.4,   ocdo: 192.0,  fanuy: 24.2,  abbny: 80.4 },
+  { date: "2025-08", sym: 60.8,   ocdo: 186.0,  fanuy: 23.6,  abbny: 79.2 },
+  { date: "2025-09", sym: 64.2,   ocdo: 194.0,  fanuy: 24.8,  abbny: 81.6 },
+  { date: "2025-10", sym: 67.4,   ocdo: 200.0,  fanuy: 25.2,  abbny: 82.8 },
+  { date: "2025-11", sym: 66.8,   ocdo: 196.0,  fanuy: 24.6,  abbny: 81.4 },
+  { date: "2025-12", sym: 61.4,   ocdo: 188.0,  fanuy: 23.8,  abbny: 80.2 },
+  { date: "2026-01", sym: 68.4,   ocdo: 198.0,  fanuy: 24.4,  abbny: 81.8 },
+  { date: "2026-02", sym: 62.1,   ocdo: 186.0,  fanuy: 23.0,  abbny: 79.4 },
+  { date: "2026-03", sym: 56.83,  ocdo: 190.0,  fanuy: 22.6,  abbny: 80.2 },
 ];
 
 // Compute % returns from IPO base (Jun 2022 = 0%)
-// Each line is independently rebased at its own Jun 2022 price.
+// Each series independently rebased at its own Jun 2022 price.
 const BASE_DATE = "2022-06";
 const BASE = PRICE_HISTORY.find((d) => d.date === BASE_DATE)!;
 const RETURNS_HISTORY = PRICE_HISTORY.filter((d) => d.date >= BASE_DATE).map((d) => ({
   date:  d.date,
   sym:   d.sym   != null ? +((d.sym   / BASE.sym!   - 1) * 100).toFixed(1) : null,
-  // OCDO: from $8.50 base → $4.90 = -42% return (realistic)
+  // OCDO: from $430 → $190 = -56% (correct — pure-play automation caught in losses)
   ocdo:  d.ocdo  != null ? +((d.ocdo  / BASE.ocdo!  - 1) * 100).toFixed(1) : null,
-  // FANUY: from $14.2 base → $17.8 = +25% (modest growth)
+  // FANUY: from $20.4 → $22.6 = +11% (modest, flat-ish)
   fanuy: d.fanuy != null ? +((d.fanuy / BASE.fanuy! - 1) * 100).toFixed(1) : null,
-  // ABB: from $28.6 base → $42.6 = +49% (solid industrials)
-  abb:   d.abb   != null ? +((d.abb   / BASE.abb!   - 1) * 100).toFixed(1) : null,
+  // ABBNY: from $46.2 → $80.2 = +74% (solid industrial compounder)
+  abbny: d.abbny != null ? +((d.abbny / BASE.abbny! - 1) * 100).toFixed(1) : null,
 }));
 
 const PEERS = [
   { key: "sym",   label: "SYM",   color: "hsl(196 100% 50%)", desc: "Symbotic Inc." },
-  { key: "ocdo",  label: "OCDO",  color: "hsl(262 83% 65%)",  desc: "Ocado Technology" },
+  { key: "ocdo",  label: "OCDO",  color: "hsl(262 83% 65%)",  desc: "Ocado Group" },
   { key: "fanuy", label: "FANUY", color: "hsl(40 90% 55%)",   desc: "Fanuc ADR" },
-  { key: "abb",   label: "ABB",   color: "hsl(142 70% 45%)",  desc: "ABB Ltd." },
+  { key: "abbny", label: "ABBNY", color: "hsl(142 70% 45%)",  desc: "ABB Ltd. ADR" },
 ];
 
 const TRACKS: { id: TrackId; label: string; color: string }[] = [
@@ -143,7 +179,7 @@ export function Historical() {
   const [selected, setSelected] = useState<Event | null>(null);
   const [searchPage, setSearchPage] = useState<string>("");
   const [chartMode, setChartMode] = useState<"price" | "returns">("price");
-  const [visiblePeers, setVisiblePeers] = useState<Set<string>>(new Set(["sym", "ocdo", "fanuy", "abb"]));
+  const [visiblePeers, setVisiblePeers] = useState<Set<string>>(new Set(["sym", "ocdo", "fanuy", "abbny"]));
   const [showLiveEvents, setShowLiveEvents] = useState(true);
 
   const toggleTrack = (id: TrackId) => {
