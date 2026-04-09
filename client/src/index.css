@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════
+   SYM NEURAL NEXUS — CYBER-FUTURISTIC THEME
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── BACKGROUNDS ───────────────────────────────────────────────── */
+  --background: 220 20% 4%;
+  --background-2: 222 22% 6%;
+  --background-3: 224 24% 9%;
+  --card: 222 22% 8%;
+  --card-foreground: 210 40% 96%;
+  --popover: 222 24% 8%;
+  --popover-foreground: 210 40% 96%;
+
+  /* ── FOREGROUNDS ───────────────────────────────────────────────── */
+  --foreground: 210 40% 95%;
+  --muted: 220 20% 18%;
+  --muted-foreground: 218 15% 55%;
+
+  /* ── ACCENT SYSTEM ─────────────────────────────────────────────── */
+  --primary: 196 100% 50%;          /* Cyber teal */
+  --primary-foreground: 220 20% 4%;
+  --secondary: 262 83% 65%;         /* Neural violet */
+  --secondary-foreground: 220 20% 4%;
+  --accent: 196 85% 12%;
+  --accent-foreground: 196 100% 70%;
+
+  /* ── BORDERS / INPUTS ──────────────────────────────────────────── */
+  --border: 220 20% 16%;
+  --input: 220 22% 12%;
+  --ring: 196 100% 50%;
+
+  /* ── SEMANTIC ──────────────────────────────────────────────────── */
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 40% 98%;
+
+  /* ── HEATMAP COLORS ────────────────────────────────────────────── */
+  --heatmap-strong-bull: 142 70% 45%;
+  --heatmap-bull: 120 60% 55%;
+  --heatmap-neutral: 220 15% 40%;
+  --heatmap-bear: 0 65% 55%;
+  --heatmap-strong-bear: 0 80% 40%;
+
+  /* ── GLOW SYSTEM ───────────────────────────────────────────────── */
+  --glow-teal: 0 0 20px hsl(196 100% 50% / 0.5);
+  --glow-violet: 0 0 20px hsl(262 83% 65% / 0.4);
+  --glow-green: 0 0 16px hsl(142 70% 45% / 0.6);
+  --glow-red: 0 0 16px hsl(0 80% 45% / 0.6);
+
+  /* ── RADIUS ─────────────────────────────────────────────────────── */
+  --radius: 0.5rem;
+
+  /* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Light mode override — keep dark for this app */
+.dark {
+  --background: 220 20% 4%;
+  --foreground: 210 40% 95%;
+}
+
+/* ── GLOBAL RESET ──────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  font-family: var(--font-sans);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  overflow: hidden;
+}
+
+/* ── SCROLLBAR ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: hsl(var(--background-2)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--primary) / 0.4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.7); }
+
+/* ── GLOW UTILITIES ────────────────────────────────────────────────── */
+.glow-teal { box-shadow: var(--glow-teal); }
+.glow-violet { box-shadow: var(--glow-violet); }
+.glow-green { text-shadow: 0 0 12px hsl(142 70% 45% / 0.8); }
+.glow-red { text-shadow: 0 0 12px hsl(0 80% 45% / 0.8); }
+
+.border-glow-teal {
+  border: 1px solid hsl(var(--primary) / 0.4);
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.15), inset 0 0 16px hsl(var(--primary) / 0.05);
+}
+
+.border-glow-violet {
+  border: 1px solid hsl(var(--secondary) / 0.4);
+  box-shadow: 0 0 16px hsl(var(--secondary) / 0.15), inset 0 0 16px hsl(var(--secondary) / 0.05);
+}
+
+/* ── CYBER PANEL ───────────────────────────────────────────────────── */
+.cyber-panel {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--primary) / 0.2);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+}
+
+/* ── NEURAL PULSE ANIMATION ────────────────────────────────────────── */
+@keyframes neural-pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); box-shadow: 0 0 30px hsl(var(--primary) / 0.6); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+
+@keyframes data-stream {
+  0% { transform: translateY(100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes holographic-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes nexus-pulse {
+  0%, 100% { box-shadow: 0 0 5px hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 25px hsl(var(--primary) / 0.8), 0 0 50px hsl(var(--primary) / 0.3); }
+}
+
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-neural-pulse { animation: neural-pulse 2s ease-in-out infinite; }
+.animate-nexus-pulse { animation: nexus-pulse 3s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-holographic {
+  background: linear-gradient(270deg, hsl(196 100% 50%), hsl(262 83% 65%), hsl(196 100% 70%), hsl(262 83% 80%));
+  background-size: 400% 400%;
+  animation: holographic-shimmer 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── HEATMAP CELL COLORS ───────────────────────────────────────────── */
+.heatmap-strong-bull {
+  background: hsl(142 70% 18% / 0.7);
+  border-color: hsl(142 70% 45% / 0.6) !important;
+  color: hsl(142 70% 65%) !important;
+}
+.heatmap-bull {
+  background: hsl(120 60% 14% / 0.6);
+  border-color: hsl(120 60% 45% / 0.4) !important;
+  color: hsl(120 60% 60%) !important;
+}
+.heatmap-neutral {
+  background: transparent;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+.heatmap-bear {
+  background: hsl(0 65% 14% / 0.6);
+  border-color: hsl(0 65% 45% / 0.4) !important;
+  color: hsl(0 65% 65%) !important;
+}
+.heatmap-strong-bear {
+  background: hsl(0 80% 12% / 0.7);
+  border-color: hsl(0 80% 40% / 0.6) !important;
+  color: hsl(0 80% 60%) !important;
+}
+
+/* ── ASSUMPTION SLIDER ─────────────────────────────────────────────── */
+input[type="range"].nexus-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: hsl(var(--muted));
+  outline: none;
+}
+input[type="range"].nexus-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+  box-shadow: 0 0 8px hsl(var(--primary) / 0.6);
+  transition: box-shadow 0.2s;
+}
+input[type="range"].nexus-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.9);
+}
+
+/* ── REACT FLOW OVERRIDES ──────────────────────────────────────────── */
+.react-flow__background { background: transparent !important; }
+.react-flow__edge-path { stroke: hsl(var(--primary) / 0.5) !important; }
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 6;
+  animation: dashdraw 0.8s linear infinite;
+}
+@keyframes dashdraw {
+  to { stroke-dashoffset: -12; }
+}
+
+/* ── NAVIGATION ACTIVE STATE ───────────────────────────────────────── */
+.nav-active {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.1);
+  border-left: 2px solid hsl(var(--primary));
+}
+
+/* ── MONO VALUES ───────────────────────────────────────────────────── */
+.mono { font-family: var(--font-mono); }
+
+/* ── GRID SCAN LINES ───────────────────────────────────────────────── */
+.scan-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    hsl(196 100% 50% / 0.015) 2px,
+    hsl(196 100% 50% / 0.015) 4px
+  );
+}
+
+/* ── PRICE TARGET DISPLAY ──────────────────────────────────────────── */
+.price-target {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, hsl(196 100% 60%), hsl(262 83% 75%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px hsl(196 100% 50% / 0.4));
+}
+
+/* ── TOOLTIP ───────────────────────────────────────────────────────── */
+.nexus-tooltip {
+  background: hsl(var(--background-3));
+  border: 1px solid hsl(var(--primary) / 0.4);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  z-index: 9999;
+}
+
+/* ── CHART CONTAINER ───────────────────────────────────────────────── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: hsl(var(--border)) !important;
+}
+.recharts-text { fill: hsl(var(--muted-foreground)) !important; font-family: var(--font-mono) !important; }
+
+/* ── GLOBE WRAPPER ─────────────────────────────────────────────────── */
+.globe-wrapper canvas {
+  border-radius: 50%;
+  box-shadow: 0 0 60px hsl(196 100% 50% / 0.2), 0 0 120px hsl(262 83% 65% / 0.1);
+}
+
+/* ── PAGE TRANSITION ───────────────────────────────────────────────── */
+.page-enter {
+  animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
