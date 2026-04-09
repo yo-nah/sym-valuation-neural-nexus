@@ -60,11 +60,13 @@ export interface IStorage {
 
 const DEFAULT_ASSUMPTIONS: InsertAssumption[] = [
   // ── FIRM ──
-  { id: "rev-growth-y1", category: "firm", key: "revenueGrowthY1", label: "Revenue Growth Y1", value: 35, defaultValue: 35, min: 5, max: 80, unit: "%", description: "YoY revenue growth for fiscal 2026", bullImpact: 18.2, bearImpact: -14.5 },
-  { id: "rev-growth-y2", category: "firm", key: "revenueGrowthY2", label: "Revenue Growth Y2", value: 28, defaultValue: 28, min: 5, max: 70, unit: "%", description: "YoY revenue growth for fiscal 2027", bullImpact: 14.1, bearImpact: -11.2 },
-  { id: "rev-growth-y3", category: "firm", key: "revenueGrowthY3", label: "Revenue Growth Y3", value: 22, defaultValue: 22, min: 5, max: 60, unit: "%", description: "YoY revenue growth for fiscal 2028", bullImpact: 10.8, bearImpact: -8.6 },
-  { id: "gross-margin", category: "firm", key: "grossMargin", label: "Gross Margin (Terminal)", value: 35, defaultValue: 35, min: 10, max: 55, unit: "%", description: "Long-run gross profit margin target", bullImpact: 22.4, bearImpact: -19.8 },
-  { id: "ebitda-margin", category: "firm", key: "ebitdaMargin", label: "Adj. EBITDA Margin", value: 18, defaultValue: 18, min: 5, max: 35, unit: "%", description: "Adjusted EBITDA margin at steady state", bullImpact: 16.3, bearImpact: -15.1 },
+  { id: "rev-growth-y1", category: "firm", key: "revenueGrowthY1", label: "Revenue Growth Y1", value: 35, defaultValue: 35, min: -20, max: 120, unit: "%", description: "YoY revenue growth FY2026 (FY2025 base: $2,247M)", bullImpact: 18.2, bearImpact: -14.5 },
+  { id: "rev-growth-y2", category: "firm", key: "revenueGrowthY2", label: "Revenue Growth Y2", value: 28, defaultValue: 28, min: -20, max: 100, unit: "%", description: "YoY revenue growth FY2027", bullImpact: 14.1, bearImpact: -11.2 },
+  { id: "rev-growth-y3", category: "firm", key: "revenueGrowthY3", label: "Revenue Growth Y3", value: 22, defaultValue: 22, min: -20, max: 80, unit: "%", description: "YoY revenue growth FY2028", bullImpact: 10.8, bearImpact: -8.6 },
+  { id: "rev-growth-y4", category: "firm", key: "revenueGrowthY4", label: "Revenue Growth Y4", value: 18, defaultValue: 18, min: -20, max: 60, unit: "%", description: "YoY revenue growth FY2029", bullImpact: 7.4, bearImpact: -6.1 },
+  { id: "rev-growth-y5", category: "firm", key: "revenueGrowthY5", label: "Revenue Growth Y5", value: 14, defaultValue: 14, min: -20, max: 50, unit: "%", description: "YoY revenue growth FY2030 (feeds terminal value)", bullImpact: 5.8, bearImpact: -4.8 },
+  { id: "gross-margin", category: "firm", key: "grossMargin", label: "Gross Margin", value: 35, defaultValue: 35, min: 10, max: 55, unit: "%", description: "Gross profit margin — sets EBITDA ceiling. EBITDA margin = grossMargin × 0.55 (opex ratio)", bullImpact: 22.4, bearImpact: -19.8 },
+  { id: "ebitda-margin", category: "firm", key: "ebitdaMargin", label: "Adj. EBITDA Margin Override", value: 18, defaultValue: 18, min: 5, max: 35, unit: "%", description: "Override: if set, used directly instead of deriving from grossMargin. Set to 0 to use grossMargin-derived EBITDA.", bullImpact: 16.3, bearImpact: -15.1 },
   { id: "wacc", category: "firm", key: "wacc", label: "WACC", value: 10.5, defaultValue: 10.5, min: 7, max: 16, unit: "%", description: "Weighted average cost of capital", bullImpact: -12.4, bearImpact: 9.8 },
   { id: "terminal-growth", category: "firm", key: "terminalGrowth", label: "Terminal Growth Rate", value: 3.5, defaultValue: 3.5, min: 1, max: 6, unit: "%", description: "Perpetuity growth rate in DCF", bullImpact: 8.9, bearImpact: -7.2 },
   { id: "capex-pct", category: "firm", key: "capexPct", label: "CapEx % Revenue", value: 8, defaultValue: 8, min: 2, max: 20, unit: "%", description: "Capital expenditure as % of revenue", bullImpact: -5.3, bearImpact: 4.1 },
@@ -92,8 +94,17 @@ export const storage: IStorage = {
   seedDefaults() {
     const existing = db.select().from(assumptions).all();
     if (existing.length === 0) {
+      // Fresh DB: insert all defaults
       for (const a of DEFAULT_ASSUMPTIONS) {
         db.insert(assumptions).values(a).run();
+      }
+    } else {
+      // Existing DB: upsert any new rows (e.g. Y4/Y5 revenue growth added in v1.6)
+      const existingIds = new Set(existing.map((r: any) => r.id));
+      for (const a of DEFAULT_ASSUMPTIONS) {
+        if (!existingIds.has(a.id)) {
+          db.insert(assumptions).values(a).run();
+        }
       }
     }
   },
