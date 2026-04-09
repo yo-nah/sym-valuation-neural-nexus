@@ -1,11 +1,11 @@
 import { useNexusStore, HeatmapMode } from "@/lib/store";
 import { Flame, TrendingDown, BarChart2, EyeOff, GitBranch } from "lucide-react";
 
-const HEATMAP_OPTIONS: { mode: HeatmapMode; label: string; color: string }[] = [
-  { mode: "bull", label: "BULL", color: "text-green-400" },
-  { mode: "bear", label: "BEAR", color: "text-red-400" },
-  { mode: "net",  label: "NET",  color: "text-primary" },
-  { mode: "off",  label: "OFF",  color: "text-muted-foreground" },
+const HEATMAP_OPTIONS: { mode: HeatmapMode; label: string; color: string; title: string }[] = [
+  { mode: "bull", label: "BULL", color: "text-green-400",      title: "Bull mode: color-codes every assumption by how much it can lift the price target (green = biggest upside driver)" },
+  { mode: "bear", label: "BEAR", color: "text-red-400",        title: "Bear mode: color-codes every assumption by how much downside risk it carries (red = biggest risk to watch)" },
+  { mode: "net",  label: "NET",  color: "text-primary",        title: "Net mode: color-codes by overall price-sensitivity magnitude regardless of direction (green/red = highest-leverage lever)" },
+  { mode: "off",  label: "OFF",  color: "text-muted-foreground", title: "Off: removes all color coding from assumption cards" },
 ];
 
 export function TopBar() {
@@ -38,11 +38,12 @@ export function TopBar() {
       {/* Heatmap mode selector */}
       <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
         <Flame size={10} className="text-muted-foreground mx-1" />
-        {HEATMAP_OPTIONS.map(({ mode, label, color }) => (
+        {HEATMAP_OPTIONS.map(({ mode, label, color, title }) => (
           <button
             key={mode}
             onClick={() => setHeatmapMode(mode)}
             data-testid={`heatmap-mode-${mode}`}
+            title={title}
             className={`text-[10px] font-mono px-2 py-0.5 rounded transition-all ${
               heatmapMode === mode
                 ? `bg-primary/20 ${color} font-bold`

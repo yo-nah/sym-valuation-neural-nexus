@@ -133,18 +133,29 @@ export const useNexusStore = create<NexusStore>((set) => ({
 }));
 
 // ── Heatmap color helper ─────────────────────────────────────────────────────
+// Heatmap modes:
+//  BULL - "What drives the upside?" Colors by bullImpact. Green = big upside driver.
+//  BEAR - "What are the biggest risks?" Colors by |bearImpact|. Red = big downside risk.
+//  NET  - "What moves the target most overall?" Colors by average magnitude, sign = net direction.
+//  OFF  - No color coding.
 export function getHeatmapClass(assumption: Assumption, mode: HeatmapMode): string {
   if (mode === "off") return "";
 
   let impact: number;
-  if (mode === "bull") impact = assumption.bullImpact;
-  else if (mode === "bear") impact = assumption.bearImpact;
-  else impact = (assumption.bullImpact + Math.abs(assumption.bearImpact)) / 2 * (assumption.bullImpact > 0 ? 1 : -1);
+  if (mode === "bull") {
+    impact = assumption.bullImpact;
+  } else if (mode === "bear") {
+    impact = assumption.bearImpact; // stored negative for bear cases
+  } else {
+    // NET: magnitude = average of both sides; sign = direction of net expected move
+    const magnitude = (Math.abs(assumption.bullImpact) + Math.abs(assumption.bearImpact)) / 2;
+    impact = assumption.bullImpact >= 0 ? magnitude : -magnitude;
+  }
 
   if (impact > 12) return "heatmap-strong-bull";
-  if (impact > 5) return "heatmap-bull";
+  if (impact > 5)  return "heatmap-bull";
   if (impact < -12) return "heatmap-strong-bear";
-  if (impact < -5) return "heatmap-bear";
+  if (impact < -5)  return "heatmap-bear";
   return "heatmap-neutral";
 }
 
@@ -152,9 +163,14 @@ export function getHeatmapColor(assumption: Assumption, mode: HeatmapMode): stri
   if (mode === "off") return "hsl(196 100% 50%)";
 
   let impact: number;
-  if (mode === "bull") impact = assumption.bullImpact;
-  else if (mode === "bear") impact = assumption.bearImpact;
-  else impact = assumption.bullImpact;
+  if (mode === "bull") {
+    impact = assumption.bullImpact;
+  } else if (mode === "bear") {
+    impact = assumption.bearImpact;
+  } else {
+    const magnitude = (Math.abs(assumption.bullImpact) + Math.abs(assumption.bearImpact)) / 2;
+    impact = assumption.bullImpact >= 0 ? magnitude : -magnitude;
+  }
 
   const t = Math.min(Math.abs(impact) / 20, 1);
   if (impact > 0) {
